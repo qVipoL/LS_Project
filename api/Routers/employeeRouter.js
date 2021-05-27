@@ -1,9 +1,10 @@
 const express = require('express');
 const epmloyeeController = require('../Controller/epmloyeeController');
+const authMiddleware = require('../Middleware/authMiddleware');
 
 const employeeRouter = express.Router();
 
-// TODO: Add middleware that checks authariztion
+employeeRouter.use(authMiddleware);
 
 employeeRouter.post('/', epmloyeeController.createEmployee);
 

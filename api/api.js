@@ -1,12 +1,23 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const session = require('express-session');
 const employeeRouter = require('./Routers/employeeRouter');
 const authRouter = require('./Routers/authRouter');
-const mongoose = require('mongoose');
 
 const app = express();
+const store = new session.MemoryStore();
 const port = 4000;
 const dbConnection =
 	'mongodb+srv://Andrey:By0QUL87ebIMq8uu@cluster0.gmzcd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+
+app.use(
+	session({
+		secret: 'a1b2c3d4',
+		cookie: { maxAge: 24 * 60 * 60 * 1000 },
+		saveUninitialized: false,
+		store
+	})
+);
 
 app.use(express.json());
 

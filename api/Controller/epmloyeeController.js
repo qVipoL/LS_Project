@@ -3,9 +3,9 @@ const Employee = require('../Model/Employee');
 function createEmployee(req, res) {
 	if (!req.body) return res.status(400).send('No data passed');
 
-	const { firstName, lastName, email, password } = req.body;
+	const { firstName, lastName, email, password, phone, adress } = req.body;
 
-	const employee = new Employee({ firstName, lastName, email, password });
+	const employee = new Employee({ firstName, lastName, email, password, phone, adress });
 
 	employee.save((err, employee) => {
 		if (err) return res.json(err);
