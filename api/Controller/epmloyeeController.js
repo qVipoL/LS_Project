@@ -1,27 +1,58 @@
+const Employee = require('../Model/Employee');
+
 function createEmployee(req, res) {
-	console.log('createEmp');
+	if (!req.body) return res.status(400).send('No data passed');
+
+	const { firstName, lastName, email, password } = req.body;
+
+	const employee = new Employee({ firstName, lastName, email, password });
+
+	employee.save((err, employee) => {
+		if (err) return res.json(err);
+
+		res.json(employee);
+	});
 }
 
 function updateEmployee(req, res) {
+	if (!req.body) return res.status(400).send('No data passed');
+
 	const { id } = req.params;
 
-	console.log(`updateEmp id : ${id}`);
+	const { firstName, lastName, email, password, phone, adress } = req.body;
+
+	const newEmployee = { firstName, lastName, email, password, phone, adress };
+
+	Employee.findByIdAndUpdate(id, newEmployee, { new: true }, (err, employee) => {
+		if (err) return res.json(err);
+		res.json(employee);
+	});
 }
 
 function deleteEmployee(req, res) {
 	const { id } = req.params;
 
-	console.log(`deleteEmp id : ${id}`);
+	Employee.findByIdAndDelete(id, (err, employee) => {
+		if (err) return res.status(400).send('Employee not found');
+
+		res.json(employee);
+	});
 }
 
 function getEmployee(req, res) {
 	const { id } = req.params;
-
-	console.log(`getEmp id : ${id}`);
+	Employee.findById(id, (err, employee) => {
+		if (err) return res.status(400).send('Employee not found');
+		res.json(employee);
+	});
 }
 
 function getAllEmployees(req, res) {
-	console.log('getAllEmp');
+	Employee.find({}, (err, employees) => {
+		if (err) return res.status(400).send('No Employees were found');
+
+		res.json(employees);
+	});
 }
 
 module.exports = {
