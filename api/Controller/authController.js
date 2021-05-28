@@ -25,11 +25,11 @@ function login(req, res) {
 function register(req, res) {
 	if (req.session.authenticated) return res.json(req.session);
 
-	if (!req.body) return res.status(400).send('No data passed');
+	const { firstName, lastName, email, password } = req.body;
 
-	const { firstName, lastName, email, password, phone, adress } = req.body;
+	if (!firstName || !lastName || !email || !password) return res.status(400).send('No data passed');
 
-	const employee = new Employee({ firstName, lastName, email, password, phone, adress });
+	const employee = new Employee({ firstName, lastName, email, password });
 
 	employee.save((err, employee) => {
 		if (err) return res.json(err);
