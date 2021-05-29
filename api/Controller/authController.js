@@ -3,14 +3,14 @@ const Employee = require('../Model/Employee');
 function login(req, res) {
 	const { email, password } = req.body;
 
-	if (!email || !password) return res.status(400).send('No data passed');
+	if (!email || !password) return res.json({ err: 'invalid_data' });
 
 	if (req.session.authenticated) return res.json(req.session);
 
 	Employee.findOne({ email }, (err, employee) => {
-		if (err) return res.status(403).send('User does not exits');
+		if (err || !employee) return res.json({ err: 'Bad Credentials' });
 
-		if (employee.password !== password) return res.status(403).send('Invalid password');
+		if (employee.password !== password) return res.json({ err: 'Bad Credentials' });
 
 		const { firstName, lastName, email } = employee;
 
@@ -27,12 +27,12 @@ function register(req, res) {
 
 	const { firstName, lastName, email, password } = req.body;
 
-	if (!firstName || !lastName || !email || !password) return res.status(400).send('No data passed');
+	if (!firstName || !lastName || !email || !password) return res.json({ err: 'invalid_data' });
 
 	const employee = new Employee({ firstName, lastName, email, password });
 
 	employee.save((err, employee) => {
-		if (err) return res.json(err);
+		if (err) return res.json({ err: 'User Already Exists' });
 
 		req.session.authenticated = true;
 

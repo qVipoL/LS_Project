@@ -1,3 +1,8 @@
 /api/node_modules
 /api/package-lock.json
 /ls-react-app/node_modules
+/ls-react-app/.git
+/ls-react-app/.gitigonre
+/ls-react-app/package-lock.json
+/ls-react-app/yarn.lock
+/ls-react-app/README.md

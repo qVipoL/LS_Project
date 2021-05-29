@@ -1,16 +1,23 @@
-import './App.css';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
+import Login from './Components/login/Login.jsx';
+import Register from './Components/register/Register.jsx';
+import NavBar from './Components/navBar/NavBar.jsx';
+import ProtectedRoute from './Components/routing/ProtectedRoute';
+import EmployeeManagement from './Components/employees/EmployeeManagement';
+import NotAuthorizedRoute from './Components/routing/NotAuthorizedRoute';
 
 function App() {
 	return (
-		<div className="App">
-			<header className="App-header">
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
-				<a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-					Learn React
-				</a>
-			</header>
+		<div>
+			<Router>
+				<NavBar />
+				<Switch>
+					<ProtectedRoute exact path="/" component={EmployeeManagement} />
+					<NotAuthorizedRoute exact path="/login" component={Login} />
+					<NotAuthorizedRoute exact path="/register" component={Register} />
+					<ProtectedRoute exact path="/employees" component={EmployeeManagement} />
+				</Switch>
+			</Router>
 		</div>
 	);
 }
