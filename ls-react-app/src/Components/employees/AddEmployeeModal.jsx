@@ -113,6 +113,8 @@ export default function AddEmployeeModal(props) {
 					emailErr: res.err
 				});
 			}
+
+			props.handleClose();
 		} else {
 			setErros({ ...errors, ...errs });
 		}

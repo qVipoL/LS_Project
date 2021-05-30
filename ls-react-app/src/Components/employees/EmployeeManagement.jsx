@@ -66,7 +66,9 @@ export default function EmployeeManagement(props) {
 			</Paper>
 
 			<Modal open={open} onClose={handleClose}>
-				<AddEmployeeModal handleClose={handleClose} />
+				<section>
+					<AddEmployeeModal handleClose={handleClose} />
+				</section>
 			</Modal>
 		</div>
 	);

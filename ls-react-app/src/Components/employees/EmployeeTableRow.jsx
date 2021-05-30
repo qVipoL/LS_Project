@@ -77,7 +77,9 @@ export default function EmployeeTableRow(props) {
 			})}
 
 			<Modal open={open} onClose={handleClose}>
-				<EditEmployeeModal handleClose={handleClose} employee={employee} handleReRender={handleReRender} />
+				<section>
+					<EditEmployeeModal handleClose={handleClose} employee={employee} handleReRender={handleReRender} />
+				</section>
 			</Modal>
 		</TableRow>
 	);

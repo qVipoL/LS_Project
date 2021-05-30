@@ -199,7 +199,6 @@ export default function Login(props) {
 						label="Last Name"
 						name="lastName"
 						value={values.lastName}
-						autoFocus
 						onChange={handleChange('lastName')}
 						className={classes.inputField}
 						error={values.lastName === '' && !values.disableSubmit}
@@ -213,7 +212,6 @@ export default function Login(props) {
 						label="Email"
 						name="email"
 						value={values.email}
-						autoFocus
 						onChange={handleChange('email')}
 						className={classes.inputField}
 						error={values.emailError !== ''}

@@ -111,11 +111,11 @@ export default function EditEmployeeModal(props) {
 					emailErr: res.err
 				});
 			}
+			handleReRender();
+			props.handleClose();
 		} else {
 			setErros({ ...errors, ...errs });
 		}
-
-		handleReRender();
 	};
 
 	return (
