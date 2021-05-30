@@ -24,7 +24,7 @@ const employeeSchema = new Schema({
 		type: String,
 		default: null
 	},
-	adress: {
+	address: {
 		type: String,
 		default: null
 	},

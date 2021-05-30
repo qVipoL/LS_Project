@@ -26,7 +26,7 @@ const columns = [
 		style: { minWidth: 80 }
 	},
 	{
-		id: 'adress',
+		id: 'address',
 		label: 'Address',
 		style: { minWidth: 100 }
 	},
@@ -55,47 +55,54 @@ const columns = [
 function formatEmployee(employee) {
 	const date = new Date(employee.startDate);
 	const startDate = date.toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
-	const { _id, email, firstName, lastName, phone, adress } = employee;
-	return { firstName, lastName, phone, adress, role: 'HR', startDate, email, id: _id };
+	const { _id, email, firstName, lastName, phone, address } = employee;
+	return { firstName, lastName, phone, address, role: 'HR', startDate, email, id: _id };
 }
 
 export default function EmployeeTable(props) {
 	const { classes } = props;
-	const [ data, setData ] = useState({ employees: [] });
+	const [ data, setData ] = useState({ employees: [], reRender: false });
 
-	useEffect(() => {
-		async function getEmployees() {
-			const response = await fetch('http://localhost:4000/employees', {
-				method: 'GET',
-				mode: 'cors',
-				cache: 'no-cache',
-				credentials: 'same-origin',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				redirect: 'follow',
-				referrerPolicy: 'no-referrer'
-			});
+	const handleReRender = () => {
+		setData({ ...data, reRender: !data.reRender });
+	};
 
-			const res = await response.json();
+	useEffect(
+		() => {
+			async function getEmployees() {
+				const response = await fetch('http://localhost:4000/employees', {
+					method: 'GET',
+					mode: 'cors',
+					cache: 'no-cache',
+					credentials: 'same-origin',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					redirect: 'follow',
+					referrerPolicy: 'no-referrer'
+				});
 
-			if (res.err === 'not_authorized') {
-				Auth.logout();
-				props.history.push('/login');
-				return;
+				const res = await response.json();
+
+				if (res.err === 'not_authorized') {
+					Auth.logout();
+					props.history.push('/login');
+					return;
+				}
+
+				let resArr = [];
+
+				res.forEach((employee) => {
+					resArr.push(formatEmployee(employee));
+				});
+
+				setData({ employees: resArr });
 			}
 
-			let resArr = [];
-
-			res.forEach((employee) => {
-				resArr.push(formatEmployee(employee));
-			});
-
-			setData({ employees: resArr });
-		}
-
-		getEmployees();
-	});
+			getEmployees();
+		},
+		[ props.open, props.history, data.reRender ]
+	);
 
 	return (
 		<TableContainer className={classes.container}>
@@ -118,6 +125,8 @@ export default function EmployeeTable(props) {
 								employee={employee}
 								key={employee.id}
 								classes={classes}
+								handleReRender={handleReRender}
+								history={props.history}
 							/>
 						);
 					})}

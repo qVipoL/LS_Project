@@ -4,22 +4,49 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import Auth from '../../Auth/auth';
+import { useState } from 'react';
+import Modal from '@material-ui/core/Modal';
+import EditEmployeeModal from './EditEmployeeModal';
 
-async function updateRequest(data) {}
+async function deleteRequest(id) {
+	const response = await fetch(`http://localhost:4000/employees/${id}`, {
+		method: 'DELETE',
+		mode: 'cors',
+		cache: 'no-cache',
+		credentials: 'same-origin',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		redirect: 'follow',
+		referrerPolicy: 'no-referrer'
+	});
 
-async function deleteRequest(id) {}
+	return await response.json();
+}
 
 export default function EmployeeTableRow(props) {
-	const { employee, columns, classes } = props;
+	const { employee, columns, classes, handleReRender } = props;
+	const [ open, setOpen ] = useState(false);
 
-	const editHandler = async (event) => {
-		event.preventDefault();
-		await updateRequest(employee);
+	const handleOpen = () => {
+		setOpen(true);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
 	};
 
 	const deleteHandler = async (event) => {
 		event.preventDefault();
 		await deleteRequest(employee.id);
+
+		if (employee.email === Auth.getData().email) {
+			Auth.logout();
+			props.history.push('/login');
+		} else {
+			handleReRender();
+		}
 	};
 
 	return (
@@ -35,7 +62,7 @@ export default function EmployeeTableRow(props) {
 						{column.id === 'avatar' ? (
 							<Avatar className={classes.avatar} />
 						) : column.id === 'edit' ? (
-							<IconButton onClick={editHandler} style={{ color: 'black' }}>
+							<IconButton onClick={handleOpen} style={{ color: 'black' }}>
 								<EditIcon color="inherit" />
 							</IconButton>
 						) : column.id === 'delete' ? (
@@ -48,6 +75,10 @@ export default function EmployeeTableRow(props) {
 					</TableCell>
 				);
 			})}
+
+			<Modal open={open} onClose={handleClose}>
+				<EditEmployeeModal handleClose={handleClose} employee={employee} handleReRender={handleReRender} />
+			</Modal>
 		</TableRow>
 	);
 }

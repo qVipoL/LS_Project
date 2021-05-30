@@ -50,8 +50,6 @@ export default function EmployeeManagement(props) {
 		setOpen(false);
 	};
 
-	const modal = <AddEmployeeModal handleClose={handleClose} />;
-
 	return (
 		<div className={classes.table}>
 			<div className={classes.header}>
@@ -64,11 +62,11 @@ export default function EmployeeManagement(props) {
 			</div>
 
 			<Paper className={classes.root}>
-				<EmployeeTable classes={classes} {...props} />
+				<EmployeeTable classes={classes} {...props} open={open} />
 			</Paper>
 
 			<Modal open={open} onClose={handleClose}>
-				{modal}
+				<AddEmployeeModal handleClose={handleClose} />
 			</Modal>
 		</div>
 	);

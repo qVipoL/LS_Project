@@ -50,8 +50,8 @@ const useStyles = makeStyles({
 });
 
 async function requestCreateUser(data) {
-	const response = await fetch('http://localhost:4000/employees', {
-		method: 'POST',
+	const response = await fetch(`http://localhost:4000/employees/${data.id}`, {
+		method: 'PUT',
 		mode: 'cors',
 		cache: 'no-cache',
 		credentials: 'same-origin',
@@ -66,45 +66,43 @@ async function requestCreateUser(data) {
 	return await response.json();
 }
 
-export default function AddEmployeeModal(props) {
+export default function EditEmployeeModal(props) {
+	const { employee, handleReRender } = props;
 	const classes = useStyles();
 	const [ values, setValues ] = useState({
-		firstName: '',
-		lastName: '',
-		email: '',
-		password: '',
-		phone: '',
-		address: ''
+		firstName: employee.firstName,
+		lastName: employee.lastName,
+		email: employee.email,
+		phone: employee.phone === null ? '' : employee.phone,
+		address: employee.address === null ? '' : employee.address
 	});
 
 	const [ errors, setErros ] = useState({
 		firstNameErr: '',
 		lastNameErr: '',
-		emailErr: '',
-		passwordErr: ''
+		emailErr: ''
 	});
 
 	const handleChange = (prop) => (event) => {
 		setErros({
 			firstNameErr: '',
 			lastNameErr: '',
-			emailErr: '',
-			passwordErr: ''
+			emailErr: ''
 		});
 		setValues({ ...values, [prop]: event.target.value });
 	};
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		const { firstName, lastName, email, password } = values;
+		const { firstName, lastName, email } = values;
 		let errs = {};
 
 		if (!firstName) errs.firstNameErr = 'No first name';
 		if (!lastName) errs.lastNameErr = 'No last name';
 		if (!validateEmail(email)) errs.emailErr = 'Invalid email';
-		if (password.length < 8) errs.passwordErr = 'Password too short';
 
 		if (Object.keys(errs).length === 0) {
+			values.id = employee.id;
 			const res = await requestCreateUser(values);
 
 			if (res.err) {
@@ -116,12 +114,14 @@ export default function AddEmployeeModal(props) {
 		} else {
 			setErros({ ...errors, ...errs });
 		}
+
+		handleReRender();
 	};
 
 	return (
 		<Paper className={classes.paper}>
 			<div className={classes.header}>
-				<Typography className={classes.heading}>Add Employee</Typography>
+				<Typography className={classes.heading}>Edit Employee</Typography>
 				<IconButton className={classes.exitButton} onClick={props.handleClose}>
 					<CloseIcon color="inherit" fontSize="large" />
 				</IconButton>
@@ -170,19 +170,6 @@ export default function AddEmployeeModal(props) {
 				<TextField
 					margin="normal"
 					fullWidth
-					id="password"
-					label="Password"
-					name="password"
-					value={values.password}
-					onChange={handleChange('password')}
-					className={classes.inputField}
-					error={errors.passwordErr !== ''}
-					helperText={errors.passwordErr}
-				/>
-
-				<TextField
-					margin="normal"
-					fullWidth
 					id="phone"
 					label="Phone"
 					name="phone"
@@ -203,7 +190,7 @@ export default function AddEmployeeModal(props) {
 				/>
 
 				<Button variant="contained" color="primary" className={classes.submitButton} onClick={handleSubmit}>
-					Add
+					Edit
 				</Button>
 			</form>
 		</Paper>
