@@ -14,6 +14,7 @@ export default function EmployeeTableRow(props) {
 
 	const editHandler = async (event) => {
 		event.preventDefault();
+		await updateRequest(employee);
 	};
 
 	const deleteHandler = async (event) => {

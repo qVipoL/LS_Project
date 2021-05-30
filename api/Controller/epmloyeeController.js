@@ -1,14 +1,16 @@
 const Employee = require('../Model/Employee');
 
 function createEmployee(req, res) {
-	if (!req.body) return res.status(400).send('No data passed');
+	if (!req.body) return res.json({ err: 'no_data' });
 
 	const { firstName, lastName, email, password, phone, adress } = req.body;
+
+	if (!firstName || !lastName || !email || !password) return res.json({ err: 'invalid_data' });
 
 	const employee = new Employee({ firstName, lastName, email, password, phone, adress });
 
 	employee.save((err, employee) => {
-		if (err) return res.json(err);
+		if (err) return res.json({ err: 'User Already Exists' });
 
 		res.json(employee);
 	});

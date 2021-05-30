@@ -6,6 +6,11 @@ import { Button, Typography } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+function validateEmail(email) {
+	const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return re.test(String(email).toLowerCase());
+}
+
 const useStyles = makeStyles({
 	paper: {
 		position: 'absolute',
@@ -44,6 +49,23 @@ const useStyles = makeStyles({
 	}
 });
 
+async function requestCreateUser(data) {
+	const response = await fetch('http://localhost:4000/employees', {
+		method: 'POST',
+		mode: 'cors',
+		cache: 'no-cache',
+		credentials: 'same-origin',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		redirect: 'follow',
+		referrerPolicy: 'no-referrer',
+		body: JSON.stringify(data)
+	});
+
+	return await response.json();
+}
+
 export default function AddEmployeeModal(props) {
 	const classes = useStyles();
 	const [ values, setValues ] = useState({
@@ -55,8 +77,48 @@ export default function AddEmployeeModal(props) {
 		address: ''
 	});
 
+	const [ errors, setErros ] = useState({
+		firstNameErr: '',
+		lastNameErr: '',
+		emailErr: '',
+		passwordErr: ''
+	});
+
 	const handleChange = (prop) => (event) => {
+		setErros({
+			firstNameErr: '',
+			lastNameErr: '',
+			emailErr: '',
+			passwordErr: ''
+		});
 		setValues({ ...values, [prop]: event.target.value });
+	};
+
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		const { firstName, lastName, email, password } = values;
+		let errs = {};
+
+		if (!firstName) errs.firstNameErr = 'No first name';
+		if (!lastName) errs.lastNameErr = 'No last name';
+		if (!validateEmail(email)) errs.emailErr = 'Invalid email';
+		if (password.length < 8) errs.passwordErr = 'Password too short';
+
+		console.log(errs);
+
+		if (Object.keys(errs).length === 0) {
+			const res = await requestCreateUser(values);
+
+			if (res.err) {
+				setErros({
+					...errors,
+					emailErr: res.err
+				});
+			}
+			
+		} else {
+			setErros({ ...errors, ...errs });
+		}
 	};
 
 	return (
@@ -78,6 +140,8 @@ export default function AddEmployeeModal(props) {
 					autoFocus
 					onChange={handleChange('firstName')}
 					className={classes.inputField}
+					error={errors.firstNameErr !== ''}
+					helperText={errors.firstNameErr}
 				/>
 
 				<TextField
@@ -89,6 +153,8 @@ export default function AddEmployeeModal(props) {
 					value={values.lastName}
 					onChange={handleChange('lastName')}
 					className={classes.inputField}
+					error={errors.lastNameErr !== ''}
+					helperText={errors.lastNameErr}
 				/>
 
 				<TextField
@@ -100,6 +166,8 @@ export default function AddEmployeeModal(props) {
 					value={values.email}
 					onChange={handleChange('email')}
 					className={classes.inputField}
+					error={errors.emailErr !== ''}
+					helperText={errors.emailErr}
 				/>
 
 				<TextField
@@ -111,6 +179,8 @@ export default function AddEmployeeModal(props) {
 					value={values.password}
 					onChange={handleChange('password')}
 					className={classes.inputField}
+					error={errors.passwordErr !== ''}
+					helperText={errors.passwordErr}
 				/>
 
 				<TextField
@@ -135,7 +205,7 @@ export default function AddEmployeeModal(props) {
 					className={classes.inputField}
 				/>
 
-				<Button variant="contained" color="primary" className={classes.submitButton}>
+				<Button variant="contained" color="primary" className={classes.submitButton} onClick={handleSubmit}>
 					Add
 				</Button>
 			</form>
