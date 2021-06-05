@@ -26,12 +26,13 @@ cd ls-react-app
 npm start
 ```
 
-3) Enter localhost:3000 in the browser
+3) Enter http://localhost:3000 in the browser
 
 ### Back-End Libraries
 * express
 * express-session
 * mongoose
+* cors
 
 ### Front-end Libraries
 * material ui
