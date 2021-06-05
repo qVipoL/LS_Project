@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const cors = require('cors');
 const employeeRouter = require('./Routers/employeeRouter');
 const authRouter = require('./Routers/authRouter');
 
@@ -8,7 +9,7 @@ const app = express();
 const store = new session.MemoryStore();
 const port = 4000;
 const dbConnection =
-	'mongodb+srv://Andrey:By0QUL87ebIMq8uu@cluster0.gmzcd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+	'mongodb+srv://Andrey23:RvH7UyQhboWGXDfb@cluster0.gmzcd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 app.use(
 	session({
@@ -18,6 +19,8 @@ app.use(
 		store
 	})
 );
+
+app.use(cors({ origin: `http://localhost:3000` }));
 
 app.use(express.json());
 

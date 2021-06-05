@@ -26,9 +26,7 @@ cd ls-react-app
 npm start
 ```
 
-3) [Disable CORS](https://alfilatov.com/posts/run-chrome-without-cors) in your browser (or deploy the app and send cors headers that allow the api url in the browser)
-
-4) Enter localhost:3000 in the browser
+3) Enter localhost:3000 in the browser
 
 ### Back-End Libraries
 * express

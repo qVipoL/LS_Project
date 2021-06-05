@@ -15,7 +15,6 @@ function App() {
 					<ProtectedRoute exact path="/" component={EmployeeManagement} />
 					<NotAuthorizedRoute exact path="/login" component={Login} />
 					<NotAuthorizedRoute exact path="/register" component={Register} />
-					<ProtectedRoute exact path="/employees" component={EmployeeManagement} />
 				</Switch>
 			</Router>
 		</div>
